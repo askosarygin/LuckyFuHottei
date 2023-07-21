@@ -1,4 +1,35 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext {
+        jetpackDaggerVersion = '2.42'
+        jetpackNavigationVersion = '2.5.3'
+        retrofitVersion = '2.9.0'
+        converterGsonVersion = '2.5.0'
+        roomVersion = '2.4.0'
+        glideVersion = '4.15.0'
+        navigationComposeVersion = '2.6.0'
+
+        //kotlin
+        coreKtxVersion = '1.8.0'
+        kotlinBomVersion = '1.8.0'
+
+        //compose
+        lifecycleRuntimeKtxVersion = '2.3.1'
+        activityComposeVersion = '1.5.1'
+        composeBomVersion = '2022.10.00'
+
+        //tests
+        junitVersion = '4.13.2'
+        espressoCoreVersion = '3.5.1'
+        extJunitVersion = '1.1.5'
+        testImplementationComposeBomVersion = '2022.10.00'
+
+        //old
+        appCompatVersion = '1.6.1'
+        androidMaterialVersion = '1.8.0'
+        constraintLayoutVersion = '2.1.4'
+    }
+}
 plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false

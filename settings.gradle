@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "LuckyFuHottei"
 include ':app'
+include ':data'
+include ':common'
+include ':game-ui'
+include ':game-domain'
