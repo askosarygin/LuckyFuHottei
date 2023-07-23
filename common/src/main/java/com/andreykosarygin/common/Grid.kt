@@ -1,4 +1,4 @@
-package com.andreykosarygin.game_ui.screen_game
+package com.andreykosarygin.common
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable

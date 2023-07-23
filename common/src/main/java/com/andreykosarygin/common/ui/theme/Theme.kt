@@ -1,4 +1,4 @@
-package com.andreykosarygin.luckyfuhottei.ui.theme
+package com.andreykosarygin.common.ui.theme
 
 import android.app.Activity
 import android.os.Build

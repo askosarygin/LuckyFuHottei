@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.andreykosarygin.common.Grid
 import com.andreykosarygin.common.R
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.BOTTOM
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.LEFT

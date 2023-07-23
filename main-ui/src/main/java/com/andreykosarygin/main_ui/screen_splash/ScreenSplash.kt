@@ -36,7 +36,7 @@ fun ScreenSplash(
     Image(
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.Crop,
-        painter = painterResource(id = R.drawable.splash_background),
+        painter = painterResource(id = R.drawable.screen_splash_background),
         contentDescription = stringResource(
             id = com.andreykosarygin.common.R.string.content_description_background
         )
