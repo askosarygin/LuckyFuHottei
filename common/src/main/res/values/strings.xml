@@ -3,4 +3,5 @@
 
     //Content descriptions
     <string name="content_description_game_cell">game_cell</string>
+    <string name="content_description_background">background</string>
 </resources>
