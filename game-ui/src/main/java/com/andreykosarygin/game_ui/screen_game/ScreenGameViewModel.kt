@@ -5,12 +5,20 @@ import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
 import com.andreykosarygin.game_ui.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ScreenGameViewModel(
 
 ) : LuckyFuHotteiViewModel<ScreenGameViewModel.Model>(Model()) {
     private var selectedCellsCount = 0
+    private var winCellsIndexes = mutableListOf<Int>()
+    private var cellReplacementIsComing = false
+    private var cellOffsetAnimationIsComing = false
+
+    private var firstSelectedCell: Cell = Cell(position = Cell.Position())
+    private var secondSelectedCell: Cell = Cell(position = Cell.Position())
+
     private val displayables = listOf(
         Cell.Displayable(iconDrawableId = R.drawable.bear, type = 1),
         Cell.Displayable(iconDrawableId = R.drawable.coins, type = 2),
@@ -23,6 +31,13 @@ class ScreenGameViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val cells = initCellsWithRandom()
             updateCells(cells)
+
+            delay(1000L)
+            winCellsIndexes = checkWinCombinations()
+            if (winCellsIndexes.isNotEmpty()) {
+                updateCellClickEnabled(false)
+                replaceCellsWithAnimation()
+            }
         }
     }
 
@@ -39,55 +54,163 @@ class ScreenGameViewModel(
         checkSelectedCells()
     }
 
+    fun fadeAnimationFinished() {
+        if (cellReplacementIsComing) {
+            setRandomDisplayablesForWinCells(
+                winCellsIndexes
+            )
+
+            switchVisibilityForWinCells(
+                true,
+                winCellsIndexes
+            )
+
+            cellReplacementIsComing = false
+        } else {
+            activateAnimationFinishedListenerForLastWinCell(
+                false,
+                winCellsIndexes.last()
+            )
+
+            winCellsIndexes = checkWinCombinations()
+
+            if (winCellsIndexes.isNotEmpty()) {
+                replaceCellsWithAnimation()
+            } else {
+                updateCellClickEnabled(true)
+            }
+        }
+    }
+
+    private fun replaceCellsWithAnimation() {
+        cellReplacementIsComing = true
+
+        activateAnimationFinishedListenerForLastWinCell(
+            true,
+            winCellsIndexes.last()
+        )
+
+        switchVisibilityForWinCells(
+            false,
+            winCellsIndexes
+        )
+    }
+
+    private fun setRandomDisplayablesForWinCells(
+        winCellsIndexes: List<Int>
+    ) {
+        winCellsIndexes.forEach {
+            val cell = model.value.cells[it]
+            val newDisplayable = displayables.random()
+            updateCellById(
+                cell.position.id,
+                cell.copy(
+                    displayable = newDisplayable
+                )
+            )
+        }
+    }
+
+
+    private fun switchVisibilityForWinCells(
+        visibility: Boolean,
+        winCellsIndexes: List<Int>
+    ) {
+        winCellsIndexes.forEach {
+            val cell = model.value.cells[it]
+
+            updateCellById(
+                cell.position.id,
+                cell.copy(
+                    playAnimationFade = visibility
+                )
+            )
+        }
+    }
+
+    private fun activateAnimationFinishedListenerForLastWinCell(
+        finishedListenerActivated: Boolean,
+        lastWinCellId: Int
+    ) {
+        val lastWinCell = model.value.cells[lastWinCellId]
+
+        updateCellById(
+            lastWinCell.position.id,
+            lastWinCell.copy(lastCellInFadeAnimation = finishedListenerActivated)
+        )
+    }
+
+    fun cellOffsetAnimationEnded() {
+        if (cellOffsetAnimationIsComing) {
+            updateCellById(
+                firstSelectedCell.position.id,
+                model.value.cells[firstSelectedCell.position.id - 1].copy(
+                    displayable = secondSelectedCell.displayable,
+                    playAnimationOffset = false
+                )
+            )
+
+            updateCellById(
+                secondSelectedCell.position.id,
+                model.value.cells[secondSelectedCell.position.id - 1].copy(
+                    displayable = firstSelectedCell.displayable,
+                    playAnimationOffset = false
+                )
+            )
+            cellOffsetAnimationIsComing = false
+
+            updateCellClickEnabled(true)
+
+            winCellsIndexes = checkWinCombinations()
+            if (winCellsIndexes.isNotEmpty()) {
+                updateCellClickEnabled(false)
+                replaceCellsWithAnimation()
+            }
+        }
+    }
+
+    private fun startCellOffsetAnimation(
+        cellsNeighborhood: CellsNeighborhood
+    ) {
+        updateCellClickEnabled(false)
+        cellOffsetAnimationIsComing = true
+
+        updateCellById(
+            firstSelectedCell.position.id,
+            firstSelectedCell.copy(
+                playAnimationOffset = true,
+                offsetDirection = cellsNeighborhood.firstCellNeighborhoodDirection
+            )
+        )
+        updateCellById(
+            secondSelectedCell.position.id,
+            secondSelectedCell.copy(
+                playAnimationOffset = true,
+                offsetDirection = cellsNeighborhood.secondCellNeighborhoodDirection
+            )
+        )
+    }
+
     private fun checkSelectedCells() {
         if (selectedCellsCount == 2) {
             val selectedCells = model.value.cells.filter {
                 it.selected
             }
 
-            val firstSelectedCell = selectedCells.first()
-            val secondSelectedCell = selectedCells.last()
+            firstSelectedCell = selectedCells.first()
+            secondSelectedCell = selectedCells.last()
 
             cellsAreNeighbors(firstSelectedCell, secondSelectedCell)?.let {
-//                Log.i("MY_TAG", "ячейка${it.firstCell.position.id} имеет соседа в направлении ${it.firstCellNeighborhoodDirection.name}")
-//                Log.i("MY_TAG", "ячейка${it.secondCell.position.id} имеет соседа в направлении ${it.secondCellNeighborhoodDirection.name}")
-
-                updateCellById(
-                    firstSelectedCell.position.id,
-                    firstSelectedCell.copy(displayable = it.secondCell.displayable)
-                )
-                updateCellById(
-                    secondSelectedCell.position.id,
-                    secondSelectedCell.copy(displayable = it.firstCell.displayable)
-                )
+                startCellOffsetAnimation(it)
             }
 
             updateCellSelectionById(firstSelectedCell.position.id, false)
             updateCellSelectionById(secondSelectedCell.position.id, false)
             selectedCellsCount = 0
-
-
-            var winCellsIndexes = checkWinCombinations()
-
-            while (winCellsIndexes.isNotEmpty()) {
-                winCellsIndexes.forEach {
-                    val cell = model.value.cells[it]
-
-                    val newDisplayable = displayables.random()
-
-                    updateCellById(
-                        cell.position.id,
-                        cell.copy(
-                            displayable = newDisplayable
-                        )
-                    )
-                }
-                winCellsIndexes = checkWinCombinations()
-            }
         }
     }
 
-    private fun checkWinCombinations() : List<Int> {
+    private fun checkWinCombinations(): MutableList<Int> {
         val cells = model.value.cells
 
         val result = mutableListOf<Int>()
@@ -120,7 +243,7 @@ class ScreenGameViewModel(
 
         //Проверка всех столбцов
         for (columnStartIndex in 0 until quantityCellsInWidth) {
-            for (index in columnStartIndex .. ((quantityCellsInHeight - 1) * quantityCellsInWidth) + columnStartIndex step quantityCellsInWidth) {
+            for (index in columnStartIndex..((quantityCellsInHeight - 1) * quantityCellsInWidth) + columnStartIndex step quantityCellsInWidth) {
                 if (previousType != cells[index].displayable.type) {
                     previousType = cells[index].displayable.type
 
@@ -183,6 +306,7 @@ class ScreenGameViewModel(
 
 
     data class Model(
+        val cellClickEnabled: Boolean = true,
         val cells: List<Cell> = listOf(),
         val navigationEvent: NavigationSingleLifeEvent? = null
     ) {
@@ -196,6 +320,7 @@ class ScreenGameViewModel(
             }
         }
     }
+
 
     private fun updateCellSelectionById(id: Int, selected: Boolean) {
         updateCellById(
@@ -219,6 +344,14 @@ class ScreenGameViewModel(
         update {
             it.copy(
                 cells = cells
+            )
+        }
+    }
+
+    private fun updateCellClickEnabled(cellClickEnabled: Boolean) {
+        update {
+            it.copy(
+                cellClickEnabled = cellClickEnabled
             )
         }
     }

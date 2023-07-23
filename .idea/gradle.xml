@@ -16,6 +16,8 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/game-domain" />
             <option value="$PROJECT_DIR$/game-ui" />
+            <option value="$PROJECT_DIR$/main-domain" />
+            <option value="$PROJECT_DIR$/main-ui" />
           </set>
         </option>
       </GradleProjectSettings>

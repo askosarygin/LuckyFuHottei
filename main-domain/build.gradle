@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.andreykosarygin.game_domain'
+    namespace 'com.andreykosarygin.main_domain'
     compileSdk 33
 
     defaultConfig {

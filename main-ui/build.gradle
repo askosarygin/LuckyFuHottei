@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.andreykosarygin.game_domain'
+    namespace 'com.andreykosarygin.main_ui'
     compileSdk 33
 
     defaultConfig {
@@ -34,9 +34,24 @@ android {
 dependencies {
     implementation "androidx.core:core-ktx:$coreKtxVersion"
     implementation platform("org.jetbrains.kotlin:kotlin-bom:$kotlinBomVersion")
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtxVersion"
+    implementation "androidx.activity:activity-compose:$activityComposeVersion"
+    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$extJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
+    androidTestImplementation platform("androidx.compose:compose-bom:$testImplementationComposeBomVersion")
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    implementation "androidx.navigation:navigation-compose:$navigationComposeVersion"
 
     implementation project(path: ':common')
+    implementation project(path: ':data')
+    implementation project(path: ':main-domain')
 }

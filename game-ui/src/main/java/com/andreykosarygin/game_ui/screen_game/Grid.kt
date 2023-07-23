@@ -1,6 +1,5 @@
 package com.andreykosarygin.game_ui.screen_game
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,19 +21,16 @@ fun Grid(
     heightCoefficientRelativeToTheWidthCell: Float = 1f,
     content: @Composable () -> Unit
 ) {
-    Box(
+    Layout(
         modifier = modifier.fillMaxSize(),
-    ) {
-        Layout(
-            measurePolicy = gridMeasurePolicy(
-                quantityCellsInWidth = quantityCellsInWidth,
-                spaceX = spaceX,
-                spaceY = spaceY,
-                heightCoefficientRelativeToTheWidthCell = heightCoefficientRelativeToTheWidthCell
-            ),
-            content = content
-        )
-    }
+        measurePolicy = gridMeasurePolicy(
+            quantityCellsInWidth = quantityCellsInWidth,
+            spaceX = spaceX,
+            spaceY = spaceY,
+            heightCoefficientRelativeToTheWidthCell = heightCoefficientRelativeToTheWidthCell
+        ),
+        content = content
+    )
 }
 
 private fun gridMeasurePolicy(
@@ -89,7 +85,8 @@ private fun MeasureScope.getRelativePositions(
     val spaceXInPx = spaceX.roundToPx()
     val spaceYInPx = spaceY.roundToPx()
 
-    val singleCellWidthPx = (constraints.maxWidth - (spaceXInPx * (quantityCellsInWidth - 1))) / quantityCellsInWidth
+    val singleCellWidthPx =
+        (constraints.maxWidth - (spaceXInPx * (quantityCellsInWidth - 1))) / quantityCellsInWidth
     val singleCellHeightPx = (singleCellWidthPx * heightCoefficientRelativeToTheWidthCell).toInt()
 
     val singleCellConstraints = constraints.copy(
