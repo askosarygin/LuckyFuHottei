@@ -24,7 +24,7 @@ import com.andreykosarygin.common.ui.theme.Yellow
 @Composable
 private fun Preview() {
     Row {
-        OutlinedGoldWhiteText(text = "1500", fonSize = 44.3.sp)
+        OutlinedGoldWhiteText(text = "h", fonSize = 44.3.sp)
     }
 
 }

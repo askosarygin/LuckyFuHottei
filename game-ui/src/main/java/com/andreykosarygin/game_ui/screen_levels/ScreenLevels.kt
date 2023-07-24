@@ -21,8 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.andreykosarygin.common.Balance
+import com.andreykosarygin.common.NavigationLevelInfo
 import com.andreykosarygin.common.Routes
 import com.andreykosarygin.game_ui.R
+import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGameLevelFive
+import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGameLevelFour
+import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGameLevelOne
+import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGameLevelThree
+import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGameLevelTwo
 import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
 import com.andreykosarygin.game_ui.screen_levels.ScreenLevelsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 
@@ -41,6 +47,46 @@ fun ScreenLevels(
 
     model.navigationEvent?.use { route ->
         when (route) {
+            ScreenGameLevelOne -> {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    Routes.SCREEN_GAME,
+                    NavigationLevelInfo(50, 3, 2, 1, 50)
+                )
+                navController.navigate(Routes.SCREEN_GAME)
+            }
+
+            ScreenGameLevelTwo -> {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    Routes.SCREEN_GAME,
+                    NavigationLevelInfo(45, 4, 3, 2, 70)
+                )
+                navController.navigate(Routes.SCREEN_GAME)
+            }
+
+            ScreenGameLevelThree -> {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    Routes.SCREEN_GAME,
+                    NavigationLevelInfo(40, 5, 4, 3, 100)
+                )
+                navController.navigate(Routes.SCREEN_GAME)
+            }
+
+            ScreenGameLevelFour -> {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    Routes.SCREEN_GAME,
+                    NavigationLevelInfo(35, 5, 5, 4, 120)
+                )
+                navController.navigate(Routes.SCREEN_GAME)
+            }
+
+            ScreenGameLevelFive -> {
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    Routes.SCREEN_GAME,
+                    NavigationLevelInfo(33, 5, 5, 5,150)
+                )
+                navController.navigate(Routes.SCREEN_GAME)
+            }
+
             ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
             ScreenHowToPlay -> navController.navigate(Routes.SCREEN_HOW_TO_PLAY)
         }

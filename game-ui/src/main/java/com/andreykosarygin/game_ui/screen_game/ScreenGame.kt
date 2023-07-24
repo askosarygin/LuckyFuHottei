@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,7 +41,9 @@ import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.RIGHT
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.TOP
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGame
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenLose
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenWin
 
 //@Preview(showBackground = true)
 //@Composable
@@ -60,8 +61,10 @@ fun ScreenGame(
     model.navigationEvent?.use { route ->
         when (route) {
             ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
-            ScreenGame -> navController.navigate(Routes.SCREEN_GAME)
+            ScreenGame -> navController.navigate(Routes.SCREEN_LEVELS)
             ScreenHowToPlay -> navController.navigate(Routes.SCREEN_HOW_TO_PLAY)
+            ScreenWin -> navController.navigate(Routes.SCREEN_WIN)
+            ScreenLose -> navController.navigate(Routes.SCREEN_LOSE)
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -69,7 +72,14 @@ fun ScreenGame(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
             painter = painterResource(
-                id = com.andreykosarygin.game_ui.R.drawable.screen_game_background
+                id = when (model.currentLevelIs){
+                    1 -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_1
+                    2 -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_2
+                    3 -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_3
+                    4 -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_4
+                    5 -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_5
+                    else -> com.andreykosarygin.game_ui.R.drawable.screen_game_background_level_1
+                }
             ),
             contentDescription = stringResource(
                 id = R.string.content_description_background
@@ -331,14 +341,7 @@ fun CellIcon(
                         null
                     }
                 )
-
-                Text(
-                    text = cellPosition.toString(),
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
             }
-
         }
     }
 }

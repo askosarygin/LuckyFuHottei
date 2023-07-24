@@ -49,6 +49,9 @@ class ScreenTreasuryViewModel(
                     )
                 )
 
+                val balance = interactor.getBalance()
+                updateBalance(balance.value.toString())
+
                 if (bought) {
                     updateTreasureByIndex(selectedTreasure.index, selectedTreasure.copy(bought = true))
                 }

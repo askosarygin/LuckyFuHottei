@@ -39,7 +39,7 @@ fun ScreenLose(
     model.navigationEvent?.use { route ->
         when (route) {
             ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
-            ScreenGameRepeatLevel -> navController.navigate(Routes.SCREEN_GAME)
+            ScreenGameRepeatLevel -> navController.navigate(Routes.SCREEN_LEVELS)
             ScreenHowToPlay -> navController.navigate(Routes.SCREEN_HOW_TO_PLAY)
         }
     }

@@ -1,11 +1,13 @@
 package com.andreykosarygin.luckyfuhottei
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.andreykosarygin.common.NavigationLevelInfo
 import com.andreykosarygin.common.Routes
 import com.andreykosarygin.game_ui.screen_game.ScreenGame
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel
@@ -30,8 +32,11 @@ import com.andreykosarygin.main_ui.screen_welcome_bonus.ScreenWelcomeBonusViewMo
 class MainActivity : ComponentActivity() {
     private fun getApplicationInstance() = application as MainApp
 
+    private var soundPlayer: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
 
@@ -59,7 +64,10 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         viewModel = ScreenMenuViewModel(
                             interactor = getApplicationInstance().interactorImplMainDomain
-                        )
+                        ),
+                        playSound = {
+                            offGameSound()
+                        }
                     )
                 }
 
@@ -75,14 +83,21 @@ class MainActivity : ComponentActivity() {
                 composable(route = Routes.SCREEN_LEVELS) {
                     ScreenLevels(
                         navController = navController,
-                        viewModel = ScreenLevelsViewModel()
+                        viewModel = ScreenLevelsViewModel(
+                            interactor = getApplicationInstance().interactorImplGameDomain
+                        )
                     )
                 }
 
                 composable(route = Routes.SCREEN_GAME) {
+                    val argument = navController.previousBackStackEntry?.savedStateHandle?.get<NavigationLevelInfo>(Routes.SCREEN_GAME)
+
                     ScreenGame(
                         navController = navController,
-                        viewModel = ScreenGameViewModel()
+                        viewModel = ScreenGameViewModel(
+                            argument = argument,
+                            interactor = getApplicationInstance().interactorImplGameDomain
+                        )
                     )
                 }
 
@@ -108,5 +123,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        offGameSound()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onGameSound()
+    }
+
+    private fun onGameSound() {
+        soundPlayer = MediaPlayer.create(this, com.andreykosarygin.common.R.raw.sound)
+        soundPlayer?.isLooping = true
+        soundPlayer?.start()
+    }
+
+    private fun offGameSound() {
+        soundPlayer?.stop()
+        soundPlayer?.release()
+        soundPlayer = null
     }
 }

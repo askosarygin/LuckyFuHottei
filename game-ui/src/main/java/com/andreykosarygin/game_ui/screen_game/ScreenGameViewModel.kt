@@ -1,18 +1,25 @@
 package com.andreykosarygin.game_ui.screen_game
 
 import androidx.lifecycle.viewModelScope
+import com.andreykosarygin.common.BalanceInfo
+import com.andreykosarygin.common.Level
 import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
+import com.andreykosarygin.common.NavigationLevelInfo
+import com.andreykosarygin.game_domain.Interactor
 import com.andreykosarygin.game_ui.R
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGame
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenLose
 import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenWin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ScreenGameViewModel(
-
+    private val argument: NavigationLevelInfo?,
+    private val interactor: Interactor
 ) : LuckyFuHotteiViewModel<ScreenGameViewModel.Model>(Model()) {
     private var selectedCellsCount = 0
     private var winCellsIndexes = mutableListOf<Int>()
@@ -22,18 +29,46 @@ class ScreenGameViewModel(
     private var firstSelectedCell: Cell = Cell(position = Cell.Position())
     private var secondSelectedCell: Cell = Cell(position = Cell.Position())
 
-    private val displayables = listOf(
-        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_bear, type = 1),
-        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
-        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3),
-        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 4),
-        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_panda, type = 5)
-    )
+
+    private val displayables = when (argument?.elementsVariations) {
+        3 -> listOf(
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 1),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3)
+        )
+
+        4 -> listOf(
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 1),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_bear, type = 4)
+        )
+
+        5 -> listOf(
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 1),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_bear, type = 4),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_panda, type = 5)
+        )
+
+        else -> listOf(
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 1),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_bear, type = 4),
+            Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_panda, type = 5)
+        )
+    }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            updateCurrentLevelIs(argument?.currentLevel ?: 1)
+
             val cells = initCellsWithRandom()
             updateCells(cells)
+
+            updateMoveLimiterCount(argument?.moveLimiterCount ?: 20)
 
             delay(1000L)
             winCellsIndexes = checkWinCombinations()
@@ -75,6 +110,12 @@ class ScreenGameViewModel(
                 winCellsIndexes
             )
 
+            if (model.value.targetPoints - winCellsIndexes.size < 0) {
+                updateTargetPoints(0)
+            } else {
+                updateTargetPoints(model.value.targetPoints - winCellsIndexes.size)
+            }
+
             switchVisibilityForWinCells(
                 true,
                 winCellsIndexes
@@ -86,6 +127,16 @@ class ScreenGameViewModel(
                 false,
                 winCellsIndexes.last()
             )
+
+            if (model.value.targetPoints <= 0) {
+                val openLevelNumber = argument?.openLevelIfWin ?: 2
+
+                viewModelScope.launch(Dispatchers.IO) {
+                    interactor.openLevel(Level(openLevelNumber - 1))
+                    interactor.changeBalance(BalanceInfo(argument?.prize ?: 50))
+                }
+                updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenWin))
+            }
 
             winCellsIndexes = checkWinCombinations()
 
@@ -176,6 +227,10 @@ class ScreenGameViewModel(
 
             updateCellClickEnabled(true)
 
+            if (model.value.moveLimiterCount <= 0) {
+                updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenLose))
+            }
+
             winCellsIndexes = checkWinCombinations()
             if (winCellsIndexes.isNotEmpty()) {
                 updateCellClickEnabled(false)
@@ -216,6 +271,7 @@ class ScreenGameViewModel(
             secondSelectedCell = selectedCells.last()
 
             cellsAreNeighbors(firstSelectedCell, secondSelectedCell)?.let {
+                updateMoveLimiterCount(model.value.moveLimiterCount - 1)
                 startCellOffsetAnimation(it)
             }
 
@@ -321,7 +377,8 @@ class ScreenGameViewModel(
 
 
     data class Model(
-        val targetPoints: Int = 530,
+        val currentLevelIs: Int = 1,
+        val targetPoints: Int = 100,
         val moveLimiterCount: Int = 0,
         val cellClickEnabled: Boolean = true,
         val cells: List<Cell> = listOf(),
@@ -335,7 +392,9 @@ class ScreenGameViewModel(
             enum class NavigationDestination {
                 ScreenMenu,
                 ScreenGame,
-                ScreenHowToPlay
+                ScreenHowToPlay,
+                ScreenWin,
+                ScreenLose
             }
         }
     }
@@ -355,6 +414,11 @@ class ScreenGameViewModel(
             )
         }
     }
+
+    private fun updateCurrentLevelIs(currentLevelIs: Int) {
+        update { it.copy(currentLevelIs = currentLevelIs) }
+    }
+
 
     private fun updateMoveLimiterCount(moveLimiterCount: Int) {
         update { it.copy(moveLimiterCount = moveLimiterCount) }

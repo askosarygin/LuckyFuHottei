@@ -44,9 +44,9 @@ fun ScreenWin(
 
     model.navigationEvent?.use { route ->
         when (route) {
-            ScreenGameNextLevel -> navController.navigate(Routes.SCREEN_GAME)
+            ScreenGameNextLevel -> navController.navigate(Routes.SCREEN_LEVELS)
             ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
-            ScreenGameRepeatLevel -> navController.navigate(Routes.SCREEN_GAME)
+            ScreenGameRepeatLevel -> navController.navigate(Routes.SCREEN_LEVELS)
             ScreenHowToPlay -> navController.navigate(Routes.SCREEN_HOW_TO_PLAY)
         }
     }
@@ -63,7 +63,10 @@ fun ScreenWin(
         )
 
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(top = 490.dp)
+        ) {
             OutlinedGoldWhiteText(
                 text = model.earnedPoints,
                 fonSize = 35.24.sp
@@ -93,7 +96,7 @@ fun ScreenWin(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 150.dp)
+                    modifier = Modifier.padding(bottom = 120.dp)
                 ) {
                     Image(
                         modifier = Modifier

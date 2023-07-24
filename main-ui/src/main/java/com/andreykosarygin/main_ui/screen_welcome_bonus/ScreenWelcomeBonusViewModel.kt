@@ -23,15 +23,15 @@ class ScreenWelcomeBonusViewModel(
         }
 
         val listOfBonus = model.value.listOfBonuses.shuffled().apply {
-            get(0).bonusValue = 55550
-            get(1).bonusValue = 55550
-            get(2).bonusValue = 55550
-            get(3).bonusValue = 55550
-            get(4).bonusValue = 55100
-            get(5).bonusValue = 55500
-            get(6).bonusValue = 51000
-            get(7).bonusValue = 52000
-            get(8).bonusValue = 55000
+            get(0).bonusValue = 0
+            get(1).bonusValue = 0
+            get(2).bonusValue = 0
+            get(3).bonusValue = 0
+            get(4).bonusValue = 100
+            get(5).bonusValue = 500
+            get(6).bonusValue = 1000
+            get(7).bonusValue = 2000
+            get(8).bonusValue = 5000
         }.sortedBy {
             it.index
         }

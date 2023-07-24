@@ -26,7 +26,7 @@ class ScreenWinViewModel : LuckyFuHotteiViewModel<ScreenWinViewModel.Model>(Mode
     }
 
     data class Model(
-        val earnedPoints: String = "+200",
+        val earnedPoints: String = "",
         val navigationEvent: NavigationSingleLifeEvent? = null
     ) {
         class NavigationSingleLifeEvent(

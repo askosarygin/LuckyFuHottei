@@ -21,7 +21,6 @@ fun Grid(
     content: @Composable () -> Unit
 ) {
     Layout(
-//        modifier = modifier.fillMaxSize(),
         modifier = modifier,
         measurePolicy = gridMeasurePolicy(
             quantityCellsInWidth = quantityCellsInWidth,

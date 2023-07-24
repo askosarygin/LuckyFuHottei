@@ -34,7 +34,8 @@ import com.andreykosarygin.main_ui.screen_menu.ScreenMenuViewModel.Model.Navigat
 @Composable
 fun ScreenMenu(
     navController: NavController,
-    viewModel: ScreenMenuViewModel
+    viewModel: ScreenMenuViewModel,
+    playSound: () -> Unit
 ) {
     val model by viewModel.model.collectAsState()
 
@@ -111,9 +112,7 @@ fun ScreenMenu(
                     modifier = Modifier
                         .size(width = 46.dp, height = 48.dp)
                         .clickable(
-                            onClick = {
-                                viewModel.buttonMusicPressed()
-                            }
+                            onClick = playSound
                         ),
                     contentScale = ContentScale.FillWidth,
                     painter = painterResource(id = R.drawable.screen_menu_icon_music_on),
