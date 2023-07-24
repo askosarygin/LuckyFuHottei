@@ -28,35 +28,41 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.andreykosarygin.common.Grid
 import com.andreykosarygin.common.OutlinedGoldWhiteText
 import com.andreykosarygin.common.R
+import com.andreykosarygin.common.Routes
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.BOTTOM
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.LEFT
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.RIGHT
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.TOP
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGame
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 
-@Preview(showBackground = true)
-@Composable
-private fun Preview() {
-    ScreenGame(ScreenGameViewModel())
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun Preview() {
+//    ScreenGame(ScreenGameViewModel())
+//}
 
 @Composable
 fun ScreenGame(
+    navController: NavController,
     viewModel: ScreenGameViewModel
 ) {
     val model by viewModel.model.collectAsState()
 
     model.navigationEvent?.use { route ->
-//        when (route) {
-//            ScreenTermsViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenSignUp ->
-//                navController.navigate(Routes.SCREEN_SIGN_UP)
-//        }
+        when (route) {
+            ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
+            ScreenGame -> navController.navigate(Routes.SCREEN_GAME)
+            ScreenHowToPlay -> navController.navigate(Routes.SCREEN_HOW_TO_PLAY)
+        }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -89,7 +95,7 @@ fun ScreenGame(
                         )
                     )
 
-                    OutlinedGoldWhiteText(text = model.earnedPoints.toString(), 29.87.sp)
+                    OutlinedGoldWhiteText(text = model.targetPoints.toString(), 29.87.sp)
                 }
 
                 Box(

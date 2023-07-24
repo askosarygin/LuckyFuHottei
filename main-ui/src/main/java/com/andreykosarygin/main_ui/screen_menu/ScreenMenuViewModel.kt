@@ -2,13 +2,13 @@ package com.andreykosarygin.main_ui.screen_menu
 
 import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
-import com.andreykosarygin.main_ui.screen_menu.ScreenMenuViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenLevel
+import com.andreykosarygin.main_ui.screen_menu.ScreenMenuViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenLevels
 import com.andreykosarygin.main_ui.screen_menu.ScreenMenuViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenTreasury
 
 class ScreenMenuViewModel : LuckyFuHotteiViewModel<ScreenMenuViewModel.Model>(Model()) {
 
     fun buttonStartPressed() {
-        updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenLevel))
+        updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenLevels))
     }
 
     fun buttonTreasuryPressed() {
@@ -37,7 +37,7 @@ class ScreenMenuViewModel : LuckyFuHotteiViewModel<ScreenMenuViewModel.Model>(Mo
             navigateTo
         ) {
             enum class NavigationDestination {
-                ScreenLevel,
+                ScreenLevels,
                 ScreenTreasury
             }
         }

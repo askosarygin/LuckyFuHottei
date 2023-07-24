@@ -3,6 +3,7 @@ package com.andreykosarygin.main_ui.screen_splash
 import androidx.lifecycle.viewModelScope
 import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
+import com.andreykosarygin.main_ui.screen_splash.ScreenSplashViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenWelcomeBonus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -10,8 +11,8 @@ class ScreenSplashViewModel : LuckyFuHotteiViewModel<ScreenSplashViewModel.Model
 
     init {
         viewModelScope.launch {
-            delay(3000L)
-
+            delay(1000L)
+            updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenWelcomeBonus))
         }
     }
 

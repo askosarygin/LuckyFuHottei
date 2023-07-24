@@ -36,7 +36,7 @@ import com.andreykosarygin.main_ui.screen_treasury.ScreenTreasuryViewModel.Model
 //}
 
 @Composable
-fun ScreenSplash(
+fun ScreenTreasury(
     navController: NavController,
     viewModel: ScreenTreasuryViewModel
 ) {

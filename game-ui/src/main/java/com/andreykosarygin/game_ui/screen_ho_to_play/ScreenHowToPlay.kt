@@ -20,30 +20,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.andreykosarygin.common.OutlinedGoldWhiteText
+import com.andreykosarygin.common.Routes
 import com.andreykosarygin.game_ui.R
+import com.andreykosarygin.game_ui.screen_ho_to_play.ScreenHowToPlayViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 
-@Preview(showBackground = true)
-@Composable
-private fun Preview() {
-    ScreenHowToPlay(ScreenHowToPlayViewModel())
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun Preview() {
+//    ScreenHowToPlay(ScreenHowToPlayViewModel())
+//}
 
 @Composable
 fun ScreenHowToPlay(
-//    navController: NavController,
+    navController: NavController,
     viewModel: ScreenHowToPlayViewModel
 ) {
     val model by viewModel.model.collectAsState()
 
-//    model.navigationEvent?.use { route ->
-//        when (route) {
-//            ScreenWelcomeBonus -> navController.navigate(Routes.SCREEN_WELCOME_BONUS)
-//        }
-//    }
+    model.navigationEvent?.use { route ->
+        when (route) {
+            ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(

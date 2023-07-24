@@ -321,7 +321,7 @@ class ScreenGameViewModel(
 
 
     data class Model(
-        val earnedPoints: Int = 530,
+        val targetPoints: Int = 530,
         val moveLimiterCount: Int = 0,
         val cellClickEnabled: Boolean = true,
         val cells: List<Cell> = listOf(),
@@ -360,8 +360,8 @@ class ScreenGameViewModel(
         update { it.copy(moveLimiterCount = moveLimiterCount) }
     }
 
-    private fun updateEarnedPoints(earnedPoints: Int) {
-        update { it.copy(earnedPoints = earnedPoints) }
+    private fun updateTargetPoints(targetPoints: Int) {
+        update { it.copy(targetPoints = targetPoints) }
     }
 
     private fun updateCells(cells: List<Cell>) {

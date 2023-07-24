@@ -16,34 +16,36 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.andreykosarygin.common.Balance
 import com.andreykosarygin.common.Grid
 import com.andreykosarygin.common.OutlinedGoldWhiteText
+import com.andreykosarygin.common.Routes
 import com.andreykosarygin.main_ui.R
+import com.andreykosarygin.main_ui.screen_welcome_bonus.ScreenWelcomeBonusViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 
-@Preview(showBackground = true)
-@Composable
-private fun Preview() {
-    ScreenWelcomeBonus(
-        ScreenWelcomeBonusViewModel()
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun Preview() {
+//    ScreenWelcomeBonus(
+//        ScreenWelcomeBonusViewModel()
+//    )
+//}
 
 @Composable
 fun ScreenWelcomeBonus(
-//    navController: NavController,
+    navController: NavController,
     viewModel: ScreenWelcomeBonusViewModel
 ) {
     val model by viewModel.model.collectAsState()
 
-//    model.navigationEvent?.use { route ->
-//        when (route) {
-//            ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
-//        }
-//    }
+    model.navigationEvent?.use { route ->
+        when (route) {
+            ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
+        }
+    }
 
     Box(contentAlignment = Alignment.Center) {
         Image(
