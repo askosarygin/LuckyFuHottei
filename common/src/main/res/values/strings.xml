@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">LuckyFuHottei</string>
+    <string name="how_to_play">HOW TO PLAY</string>
+    <string name="how_to_play_description_1_1">Main task: match 3 identical elements</string>
+    <string name="how_to_play_description_1_2">in one straight line.</string>
+    <string name="how_to_play_description_2_1">Each level has a move limiter, so</string>
+    <string name="how_to_play_description_2_2">choose wisely. Good luck!</string>
 
     //Content descriptions
     <string name="content_description_game_cell">game_cell</string>
