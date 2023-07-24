@@ -4,6 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
 import com.andreykosarygin.game_ui.R
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenGame
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
+import com.andreykosarygin.game_ui.screen_game.ScreenGameViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,6 +42,18 @@ class ScreenGameViewModel(
                 replaceCellsWithAnimation()
             }
         }
+    }
+
+    fun buttonHomePressed() {
+        updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenMenu))
+    }
+
+    fun buttonRepeatPressed() {
+        updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenGame))
+    }
+
+    fun buttonHowToPlayPressed() {
+        updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenHowToPlay))
     }
 
     fun cellClicked(id: Int) {
@@ -306,6 +321,8 @@ class ScreenGameViewModel(
 
 
     data class Model(
+        val earnedPoints: Int = 530,
+        val moveLimiterCount: Int = 0,
         val cellClickEnabled: Boolean = true,
         val cells: List<Cell> = listOf(),
         val navigationEvent: NavigationSingleLifeEvent? = null
@@ -316,17 +333,16 @@ class ScreenGameViewModel(
             navigateTo
         ) {
             enum class NavigationDestination {
-
+                ScreenMenu,
+                ScreenGame,
+                ScreenHowToPlay
             }
         }
     }
 
 
     private fun updateCellSelectionById(id: Int, selected: Boolean) {
-        updateCellById(
-            id,
-            model.value.cells[id - 1].copy(selected = selected)
-        )
+        updateCellById(id, model.value.cells[id - 1].copy(selected = selected))
     }
 
     private fun updateCellById(id: Int, newCell: Cell) {
@@ -340,28 +356,24 @@ class ScreenGameViewModel(
         }
     }
 
+    private fun updateMoveLimiterCount(moveLimiterCount: Int) {
+        update { it.copy(moveLimiterCount = moveLimiterCount) }
+    }
+
+    private fun updateEarnedPoints(earnedPoints: Int) {
+        update { it.copy(earnedPoints = earnedPoints) }
+    }
+
     private fun updateCells(cells: List<Cell>) {
-        update {
-            it.copy(
-                cells = cells
-            )
-        }
+        update { it.copy(cells = cells) }
     }
 
     private fun updateCellClickEnabled(cellClickEnabled: Boolean) {
-        update {
-            it.copy(
-                cellClickEnabled = cellClickEnabled
-            )
-        }
+        update { it.copy(cellClickEnabled = cellClickEnabled) }
     }
 
     private fun updateNavigationEvent(navigationEvent: Model.NavigationSingleLifeEvent) {
-        update {
-            it.copy(
-                navigationEvent = navigationEvent
-            )
-        }
+        update { it.copy(navigationEvent = navigationEvent) }
     }
 
     private fun initCellsWithRandom(): MutableList<Cell> {

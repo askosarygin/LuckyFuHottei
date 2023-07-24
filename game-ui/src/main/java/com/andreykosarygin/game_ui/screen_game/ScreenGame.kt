@@ -4,7 +4,13 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,19 +23,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.andreykosarygin.common.Grid
+import com.andreykosarygin.common.OutlinedGoldWhiteText
 import com.andreykosarygin.common.R
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.BOTTOM
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.LEFT
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.RIGHT
 import com.andreykosarygin.game_ui.screen_game.CellsNeighborhood.Direction.TOP
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    ScreenGame(ScreenGameViewModel())
+}
 
 @Composable
 fun ScreenGame(
@@ -43,58 +58,190 @@ fun ScreenGame(
 //                navController.navigate(Routes.SCREEN_SIGN_UP)
 //        }
     }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(
+                id = com.andreykosarygin.game_ui.R.drawable.screen_game_background
+            ),
+            contentDescription = stringResource(
+                id = R.string.content_description_background
+            )
+        )
 
-    Box(contentAlignment = Alignment.Center) {
-
-        Grid(
-            quantityCellsInWidth = ScreenGameViewModel.quantityCellsInWidth,
-            heightCoefficientRelativeToTheWidthCell = 0.7914f
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
-            model.cells.forEach { cell ->
-                CellBackground(selected = cell.selected)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 80.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        modifier = Modifier.size(width = 38.dp, 33.dp),
+                        painter = painterResource(
+                            id = com.andreykosarygin.game_ui.R.drawable.screen_game_earned_points_cup
+                        ),
+                        contentDescription = stringResource(
+                            id = R.string.content_description_background
+                        )
+                    )
+
+                    OutlinedGoldWhiteText(text = model.earnedPoints.toString(), 29.87.sp)
+                }
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.padding(top = 5.dp)
+                ) {
+                    Image(
+                        modifier = Modifier.size(width = 197.dp, 84.dp),
+                        painter = painterResource(
+                            id = com.andreykosarygin.game_ui.R.drawable.screen_game_move_limiter_count_background
+                        ),
+                        contentDescription = stringResource(
+                            id = R.string.content_description_background
+                        )
+                    )
+
+                    OutlinedGoldWhiteText(text = model.moveLimiterCount.toString(), 35.24.sp)
+                }
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 30.dp, start = 10.dp, end = 10.dp),
+                    contentScale = ContentScale.FillWidth,
+                    painter = painterResource(
+                        id = com.andreykosarygin.game_ui.R.drawable.screen_game_game_field_top
+                    ),
+                    contentDescription = stringResource(
+                        id = com.andreykosarygin.common.R.string.content_description_background
+                    )
+                )
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 25.dp, end = 30.dp),
+                ) {
+                    Grid(
+                        quantityCellsInWidth = ScreenGameViewModel.quantityCellsInWidth,
+                        heightCoefficientRelativeToTheWidthCell = 0.7914f
+                    ) {
+                        model.cells.forEach { cell ->
+                            CellBackground(selected = cell.selected)
+                        }
+                    }
+
+                    Grid(
+                        quantityCellsInWidth = ScreenGameViewModel.quantityCellsInWidth,
+                        heightCoefficientRelativeToTheWidthCell = 0.7914f
+                    ) {
+                        val localDensity = LocalDensity.current
+                        model.cells.forEach { cell ->
+                            var offsetForAnimation by remember { mutableStateOf(30.dp) }
+                            CellIcon(
+                                modifier = Modifier.onGloballyPositioned { coordinates ->
+                                    with(localDensity) {
+                                        offsetForAnimation = when (cell.offsetDirection) {
+                                            LEFT -> coordinates.size.width.toDp()
+                                            RIGHT -> coordinates.size.width.toDp()
+                                            TOP -> coordinates.size.height.toDp()
+                                            BOTTOM -> coordinates.size.height.toDp()
+                                        }
+                                    }
+                                },
+                                cellPosition = cell.position.id,
+                                selected = cell.selected,
+                                drawableId = cell.displayable.iconDrawableId,
+                                drawableVisible = cell.playAnimationFade,
+                                fadeAnimationFinishedListener =
+                                if (cell.lastCellInFadeAnimation) {
+                                    {
+                                        viewModel.fadeAnimationFinished()
+                                    }
+                                } else {
+                                    null
+                                },
+                                onClickEnabled = model.cellClickEnabled,
+                                onClick = {
+                                    viewModel.cellClicked(cell.position.id)
+                                },
+                                playOffsetAnimation = cell.playAnimationOffset,
+                                offsetAnimationDp = offsetForAnimation,
+                                offsetAnimationDirection = cell.offsetDirection,
+                                offsetAnimationFinishedListener = {
+                                    viewModel.cellOffsetAnimationEnded()
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
 
-        Grid(
-            quantityCellsInWidth = ScreenGameViewModel.quantityCellsInWidth,
-            heightCoefficientRelativeToTheWidthCell = 0.7914f
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            val localDensity = LocalDensity.current
-            model.cells.forEach { cell ->
-                var offsetForAnimation by remember { mutableStateOf(30.dp) }
-                CellIcon(
-                    modifier = Modifier.onGloballyPositioned { coordinates ->
-                        with(localDensity) {
-                            offsetForAnimation = when (cell.offsetDirection) {
-                                LEFT -> coordinates.size.width.toDp()
-                                RIGHT -> coordinates.size.width.toDp()
-                                TOP -> coordinates.size.height.toDp()
-                                BOTTOM -> coordinates.size.height.toDp()
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 150.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(width = 46.dp, height = 48.dp)
+                        .clickable(
+                            onClick = {
+                                viewModel.buttonHomePressed()
                             }
-                        }
-                    },
-                    cellPosition = cell.position.id,
-                    selected = cell.selected,
-                    drawableId = cell.displayable.iconDrawableId,
-                    drawableVisible = cell.playAnimationFade,
-                    fadeAnimationFinishedListener =
-                    if (cell.lastCellInFadeAnimation) {
-                        {
-                            viewModel.fadeAnimationFinished()
-                        }
-                    } else {
-                        null
-                    },
-                    onClickEnabled = model.cellClickEnabled,
-                    onClick = {
-                        viewModel.cellClicked(cell.position.id)
-                    },
-                    playOffsetAnimation = cell.playAnimationOffset,
-                    offsetAnimationDp = offsetForAnimation,
-                    offsetAnimationDirection = cell.offsetDirection,
-                    offsetAnimationFinishedListener = {
-                        viewModel.cellOffsetAnimationEnded()
-                    }
+                        ),
+                    contentScale = ContentScale.FillWidth,
+                    painter = painterResource(
+                        id = com.andreykosarygin.game_ui.R.drawable.screen_game_icon_home
+                    ),
+                    contentDescription = stringResource(
+                        id = R.string.content_description_background
+                    )
+                )
+
+                Image(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .size(width = 46.dp, height = 48.dp)
+                        .clickable(
+                            onClick = {
+                                viewModel.buttonRepeatPressed()
+                            }
+                        ),
+                    contentScale = ContentScale.FillWidth,
+                    painter = painterResource(
+                        id = com.andreykosarygin.game_ui.R.drawable.screen_game_icon_repeat
+                    ),
+                    contentDescription = stringResource(
+                        id = R.string.content_description_background
+                    )
+                )
+
+                Image(
+                    modifier = Modifier
+                        .size(width = 46.dp, height = 48.dp)
+                        .clickable(
+                            onClick = {
+                                viewModel.buttonHowToPlayPressed()
+                            }
+                        ),
+                    contentScale = ContentScale.FillWidth,
+                    painter = painterResource(
+                        id = com.andreykosarygin.game_ui.R.drawable.screen_game_icon_how_to_play
+                    ),
+                    contentDescription = stringResource(
+                        id = R.string.content_description_background
+                    )
                 )
             }
         }
