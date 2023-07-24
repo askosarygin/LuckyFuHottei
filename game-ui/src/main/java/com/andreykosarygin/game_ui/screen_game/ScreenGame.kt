@@ -84,19 +84,28 @@ fun ScreenGame(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top = 80.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        modifier = Modifier.size(width = 38.dp, 33.dp),
-                        painter = painterResource(
-                            id = com.andreykosarygin.game_ui.R.drawable.screen_game_earned_points_cup
-                        ),
-                        contentDescription = stringResource(
-                            id = R.string.content_description_background
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopStart
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 140.dp)
+                    ) {
+                        Image(
+                            modifier = Modifier.size(width = 38.dp, 33.dp),
+                            painter = painterResource(
+                                id = com.andreykosarygin.game_ui.R.drawable.screen_game_earned_points_cup
+                            ),
+                            contentDescription = stringResource(
+                                id = R.string.content_description_background
+                            )
                         )
-                    )
 
-                    OutlinedGoldWhiteText(text = model.targetPoints.toString(), 29.87.sp)
+                        OutlinedGoldWhiteText(text = model.targetPoints.toString(), 29.87.sp)
+                    }
                 }
+
 
                 Box(
                     contentAlignment = Alignment.Center,

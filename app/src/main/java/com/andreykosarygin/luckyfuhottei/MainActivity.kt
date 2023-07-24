@@ -26,7 +26,10 @@ import com.andreykosarygin.main_ui.screen_treasury.ScreenTreasuryViewModel
 import com.andreykosarygin.main_ui.screen_welcome_bonus.ScreenWelcomeBonus
 import com.andreykosarygin.main_ui.screen_welcome_bonus.ScreenWelcomeBonusViewModel
 
+
 class MainActivity : ComponentActivity() {
+    private fun getApplicationInstance() = application as MainApp
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -36,28 +39,36 @@ class MainActivity : ComponentActivity() {
                 composable(route = Routes.SCREEN_SPLASH) {
                     ScreenSplash(
                         navController = navController,
-                        viewModel = ScreenSplashViewModel()
+                        viewModel = ScreenSplashViewModel(
+                            interactor = getApplicationInstance().interactorImplMainDomain
+                        )
                     )
                 }
 
                 composable(route = Routes.SCREEN_WELCOME_BONUS) {
                     ScreenWelcomeBonus(
                         navController = navController,
-                        viewModel = ScreenWelcomeBonusViewModel()
+                        viewModel = ScreenWelcomeBonusViewModel(
+                            interactor = getApplicationInstance().interactorImplMainDomain
+                        )
                     )
                 }
 
                 composable(route = Routes.SCREEN_MENU) {
                     ScreenMenu(
                         navController = navController,
-                        viewModel = ScreenMenuViewModel()
+                        viewModel = ScreenMenuViewModel(
+                            interactor = getApplicationInstance().interactorImplMainDomain
+                        )
                     )
                 }
 
                 composable(route = Routes.SCREEN_TREASURY) {
                     ScreenTreasury(
                         navController = navController,
-                        viewModel = ScreenTreasuryViewModel()
+                        viewModel = ScreenTreasuryViewModel(
+                            interactor = getApplicationInstance().interactorImplMainDomain
+                        )
                     )
                 }
 

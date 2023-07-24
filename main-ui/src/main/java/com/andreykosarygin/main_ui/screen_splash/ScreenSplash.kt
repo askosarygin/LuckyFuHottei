@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.andreykosarygin.common.Routes
 import com.andreykosarygin.main_ui.R
+import com.andreykosarygin.main_ui.screen_splash.ScreenSplashViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
 import com.andreykosarygin.main_ui.screen_splash.ScreenSplashViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenWelcomeBonus
 
 //@Preview(showBackground = true)
@@ -30,6 +31,7 @@ fun ScreenSplash(
     model.navigationEvent?.use { route ->
         when (route) {
             ScreenWelcomeBonus -> navController.navigate(Routes.SCREEN_WELCOME_BONUS)
+            ScreenMenu -> navController.navigate(Routes.SCREEN_MENU)
         }
     }
 

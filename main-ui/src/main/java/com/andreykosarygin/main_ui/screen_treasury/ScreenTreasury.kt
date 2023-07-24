@@ -64,10 +64,16 @@ fun ScreenTreasury(
             contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Balance(
-                    modifier = Modifier.padding(top = 70.dp),
-                    balanceCount = model.balance
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopStart
+                ) {
+                    Balance(
+                        modifier = Modifier.padding(top = 70.dp, start = 100.dp),
+                        balanceCount = model.balance
+                    )
+                }
+
 
                 Image(
                     modifier = Modifier
@@ -93,9 +99,11 @@ fun ScreenTreasury(
                 spaceY = 25.dp
             ) {
                 model.listOfTreasure.forEach { treasure ->
+
                     if (treasure.bought) {
                         Image(
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .offset(y = treasure.offsetY),
                             painter = painterResource(id = treasure.drawableBought),
                             contentDescription = stringResource(

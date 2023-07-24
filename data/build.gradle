@@ -39,4 +39,5 @@ dependencies {
 
     implementation project(path: ':common')
     implementation project(path: ':game-domain')
+    implementation project(path: ':main-domain')
 }

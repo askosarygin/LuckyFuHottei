@@ -1,13 +1,34 @@
 package com.andreykosarygin.main_ui.screen_treasury
 
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.andreykosarygin.common.LuckyFuHotteiViewModel
 import com.andreykosarygin.common.LuckyFuHotteiViewModelSingleLifeEvent
+import com.andreykosarygin.common.TreasureInfo
+import com.andreykosarygin.main_domain.Interactor
 import com.andreykosarygin.main_ui.R
 import com.andreykosarygin.main_ui.screen_treasury.ScreenTreasuryViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenHowToPlay
 import com.andreykosarygin.main_ui.screen_treasury.ScreenTreasuryViewModel.Model.NavigationSingleLifeEvent.NavigationDestination.ScreenMenu
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.Model>(Model()) {
+class ScreenTreasuryViewModel(
+    private val interactor: Interactor
+) : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.Model>(Model()) {
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val balance = interactor.getBalance()
+            updateBalance(balance.value.toString())
+
+            model.value.listOfTreasure.forEach {
+                val isBought = interactor.isTreasureBought(TreasureInfo(it.index, 0))
+                if (isBought) {
+                    updateTreasureByIndex(it.index, it.copy(bought = true))
+                }
+            }
+        }
+    }
 
     fun buttonHomePressed() {
         updateNavigationEvent(Model.NavigationSingleLifeEvent(ScreenMenu))
@@ -18,11 +39,25 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
     }
 
     fun treasureSelected(index: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val selectedTreasure = model.value.listOfTreasure[index]
+            if (!selectedTreasure.bought) {
+                val bought = interactor.buyTreasure(
+                    TreasureInfo(
+                        selectedTreasure.index,
+                        selectedTreasure.price
+                    )
+                )
 
+                if (bought) {
+                    updateTreasureByIndex(selectedTreasure.index, selectedTreasure.copy(bought = true))
+                }
+            }
+        }
     }
 
     data class Model(
-        val balance: String = "530",
+        val balance: String = "0",
         val listOfTreasure: List<Treasure> = listOf(
             Treasure(
                 0,
@@ -33,7 +68,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(1).dp
             ),
             Treasure(
-                0,
+                1,
                 200,
                 false,
                 R.drawable.screen_treasure_treasure_1_not_bought,
@@ -41,7 +76,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(10).dp
             ),
             Treasure(
-                0,
+                2,
                 350,
                 false,
                 R.drawable.screen_treasure_treasure_2_not_bought,
@@ -49,7 +84,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(10).dp
             ),
             Treasure(
-                0,
+                3,
                 600,
                 false,
                 R.drawable.screen_treasure_treasure_3_not_bought,
@@ -57,7 +92,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(10).dp
             ),
             Treasure(
-                0,
+                4,
                 1000,
                 false,
                 R.drawable.screen_treasure_treasure_4_not_bought,
@@ -65,7 +100,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 10.dp
             ),
             Treasure(
-                0,
+                5,
                 2000,
                 false,
                 R.drawable.screen_treasure_treasure_5_not_bought,
@@ -73,7 +108,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(10).dp
             ),
             Treasure(
-                0,
+                6,
                 3000,
                 false,
                 R.drawable.screen_treasure_treasure_6_not_bought,
@@ -81,7 +116,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 0.dp
             ),
             Treasure(
-                0,
+                7,
                 3500,
                 false,
                 R.drawable.screen_treasure_treasure_7_not_bought,
@@ -89,7 +124,7 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 -(10).dp
             ),
             Treasure(
-                0,
+                8,
                 5000,
                 false,
                 R.drawable.screen_treasure_treasure_8_not_bought,
@@ -108,6 +143,17 @@ class ScreenTreasuryViewModel : LuckyFuHotteiViewModel<ScreenTreasuryViewModel.M
                 ScreenMenu,
                 ScreenHowToPlay
             }
+        }
+    }
+
+    private fun updateTreasureByIndex(index: Int, treasure: Treasure) {
+        update {
+            it.copy(
+                listOfTreasure = it.listOfTreasure.toMutableList().apply {
+                    removeAt(index)
+                    add(index, treasure)
+                }
+            )
         }
     }
 

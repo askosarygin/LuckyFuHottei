@@ -59,10 +59,10 @@ fun ScreenWelcomeBonus(
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopStart
         ) {
             Balance(
-                modifier = Modifier.padding(top = 70.dp),
+                modifier = Modifier.padding(top = 70.dp, start = 100.dp),
                 balanceCount = model.balance
             )
         }
@@ -97,7 +97,7 @@ fun ScreenWelcomeBonus(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         if (model.showListOfBonus) {
-                            OutlinedGoldWhiteText(text = bonus.count.toString(), fonSize = 30.sp)
+                            OutlinedGoldWhiteText(text = bonus.bonusValue.toString(), fonSize = 30.sp)
                         } else {
                             Image(
                                 modifier = Modifier
@@ -106,7 +106,7 @@ fun ScreenWelcomeBonus(
                                         onClick = {
                                             viewModel.switchBonusIconSelected(bonus.index)
                                         },
-                                        enabled = model.bonusClickable
+                                        enabled = bonus.clickable
                                     )
                                     .alpha(alpha = if (bonus.selected) 1f else 0.7f),
                                 painter = painterResource(id = R.drawable.screen_welcome_bonus_coin),

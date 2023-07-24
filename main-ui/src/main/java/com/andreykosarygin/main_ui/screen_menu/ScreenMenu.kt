@@ -59,10 +59,10 @@ fun ScreenMenu(
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopStart
         ) {
             Balance(
-                modifier = Modifier.padding(top = 70.dp),
+                modifier = Modifier.padding(top = 70.dp, start = 100.dp),
                 balanceCount = model.balance
             )
         }
