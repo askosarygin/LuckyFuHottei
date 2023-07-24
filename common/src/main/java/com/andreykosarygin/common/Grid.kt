@@ -1,6 +1,5 @@
 package com.andreykosarygin.common
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
@@ -22,7 +21,8 @@ fun Grid(
     content: @Composable () -> Unit
 ) {
     Layout(
-        modifier = modifier.fillMaxSize(),
+//        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         measurePolicy = gridMeasurePolicy(
             quantityCellsInWidth = quantityCellsInWidth,
             spaceX = spaceX,

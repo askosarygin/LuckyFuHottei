@@ -112,7 +112,7 @@ fun CellBackground(
     ) {
         Image(
             painter = painterResource(
-                id = com.andreykosarygin.game_ui.R.drawable.background_cell
+                id = com.andreykosarygin.game_ui.R.drawable.screen_game_background_cell
             ),
             contentDescription = stringResource(id = R.string.content_description_game_cell),
             colorFilter = if (selected) {

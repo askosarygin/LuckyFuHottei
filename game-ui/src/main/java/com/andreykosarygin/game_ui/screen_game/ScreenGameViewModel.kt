@@ -20,11 +20,11 @@ class ScreenGameViewModel(
     private var secondSelectedCell: Cell = Cell(position = Cell.Position())
 
     private val displayables = listOf(
-        Cell.Displayable(iconDrawableId = R.drawable.bear, type = 1),
-        Cell.Displayable(iconDrawableId = R.drawable.coins, type = 2),
-        Cell.Displayable(iconDrawableId = R.drawable.crane, type = 3),
-        Cell.Displayable(iconDrawableId = R.drawable.lamp, type = 4),
-        Cell.Displayable(iconDrawableId = R.drawable.panda, type = 5)
+        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_bear, type = 1),
+        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_coins, type = 2),
+        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_crane, type = 3),
+        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_lamp, type = 4),
+        Cell.Displayable(iconDrawableId = R.drawable.screen_game_icon_panda, type = 5)
     )
 
     init {
